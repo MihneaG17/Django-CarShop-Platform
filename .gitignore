@@ -3,3 +3,6 @@ db.sqlite3-journal
 
 logs/
 *.log
+
+temporar-facturi/
+mesaje/
