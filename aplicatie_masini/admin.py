@@ -1,26 +1,12 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Locatie, Masina, Marca, CategorieMasina, Serviciu, Accesoriu, CustomUser, IncercareLogare, Comanda, ItemComanda
+from .models import Masina, Marca, CategorieMasina, Serviciu, Accesoriu, CustomUser, IncercareLogare, Comanda, ItemComanda
 
 admin.site.site_header = "Panou de Administrare Magazin de masini"
 admin.site.site_title = "Admin Site Masini"
 admin.site.index_title = "Bine ai venit în panoul de administrare"
 
 # Register your models here.
-
-class LocatieAdmin(admin.ModelAdmin):
-    list_display = ('oras', 'judet') #afiseaza campurile in lista de obiecte
-    list_filter = ('oras', 'judet') #adauga filtre laterale
-    search_fields = ('oras', ) #permite cautarea dupa anumite campuri
-    fieldsets = (
-        ('Date Generale', {
-            'fields': ('oras', 'judet')
-        }),
-        ('Date Specifice', {
-            'fields': ('adresa', 'cod_postal'),
-            'classes': ('collapse',),  # secțiune pliabilă
-        }),
-    )
 
 class MasinaAdmin(admin.ModelAdmin):
     ordering = ['pret_masina', '-kilometraj']
@@ -104,8 +90,7 @@ class CustomUserAdmin(UserAdmin):
                 'cod_postal',
                 'cod',
                 'email_confirmat', )
-    
-admin.site.register(Locatie, LocatieAdmin)
+
 admin.site.register(Marca, MarcaAdmin)
 admin.site.register(Masina, MasinaAdmin)
 admin.site.register(CategorieMasina, CategorieMasinaAdmin)
@@ -142,20 +127,3 @@ class ComandaAdmin(admin.ModelAdmin):
 
 admin.site.register(Comanda, ComandaAdmin)
 
-
-"""
-def get_readonly_fields(self, request, obj = None):
-        readonly_fields=super().get_readonly_fields(request, obj)
-
-        if request.user.is_superuser:
-            return readonly_fields
-        if request.user.has_perm('aplicatie_masini.blocheaza_utilizator'):
-            campuri_permise=['first_name', 'last_name', 'email', 'blocat']
-            toate_campurile_afisate=self.get_fields(request,obj)
-            campuri_de_blocat=[]
-            for nume in toate_campurile_afisate:
-                if nume not in campuri_permise:
-                    campuri_de_blocat.append(nume)
-            return campuri_de_blocat
-        return readonly_fields
-"""

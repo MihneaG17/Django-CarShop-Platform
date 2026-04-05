@@ -42,5 +42,4 @@ urlpatterns = [
 	path("adauga-produse", views.adauga_produse, name="adauga-produse"),
 	path("oferta", views.pagina_oferta, name="oferta"),
 	path("sitemap.xml", sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
- 	path("locatii", views.afis_produse, name="locatii"),
 ]

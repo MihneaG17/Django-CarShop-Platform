@@ -22,7 +22,7 @@ import os
 import time
 import unicodedata
 from . import middleware
-from .models import Locatie, Masina, Marca, CategorieMasina, Serviciu, Accesoriu, CustomUser, IncercareLogare, Comanda, ItemComanda
+from .models import Masina, Marca, CategorieMasina, Serviciu, Accesoriu, CustomUser, IncercareLogare, Comanda, ItemComanda
 from .forms import MasinaFilterForm, ContactForm, CustomUserCreationForm, CustomAuthenticationForm, FormularAdaugareProdus
 import logging
 from reportlab.lib.pagesizes import letter
@@ -377,14 +377,6 @@ def log_view(request):
                   }
         )
 
-def afis_produse(request):
-    locatii = Locatie.object.all()
-    return render(request, "aplicatie_masini/locatii.html",
-                  {
-                      "locatii": locatii[0],
-                      "nr_locatii": len(locatii),
-                  }
-        )
 
 def produse(request, nume_categorie=None): 
     logger.debug(f"Accesare pagina de produse. Parametrii GET {request.GET}") #debug 1- pentru a vedea parametrii get (filtrele) aplicate
@@ -844,39 +836,16 @@ def pagina_oferta(request):
             messages.info(request, "Felicitări! Ai deblocat oferta specială prin accesarea bannerului.") #mesaj info 2 
         except Permission.DoesNotExist:
             pass
-
-
-def cos_virtual(request):
-    """
-    Pagina coșului virtual - gestionează și afișează produsele adiauste în coș
-    """
-    categorii_meniu = CategorieMasina.objects.all().order_by('nume_categorie')
-    return render(request, 'aplicatie_masini/cos_virtual.html', {
-        'toate_categoriile': categorii_meniu,
-    })
-
-    if not request.user.has_perm('aplicatie_masini.vizualizare_oferta'):
-        nr_accesari=request.session.get('contor_403',0)
-        nr_accesari+=1
-        request.session['contor_403']=nr_accesari
-        flag_rosu=False
-        mesaj_atentionare=""
-        
-        if nr_accesari>settings.N_MAX_403:
-            flag_rosu=True
-            mesaj_atentionare=f"Ai incercat sa accesezi resurse interzise de {nr_accesari}"
-        return HttpResponseForbidden(render(request, 'aplicatie_masini/eroare403.html', {
-            'titlu': 'Eroare afișare ofertă',
-            'mesaj_personalizat': 'Nu ai voie să vizualizezi oferta',
-            'mesaj_atentionare': mesaj_atentionare,
-            'nr_accesari': nr_accesari,
-            'flag_rosu': flag_rosu,
-            'toate_categoriile': categorii_meniu,
-            'ip_client': request.META.get('REMOTE_ADDR',''),
-        }))
     return render(request, 'aplicatie_masini/pagina-oferta.html', {
         'toate_categoriile': categorii_meniu,
         'ip_client': request.META.get('REMOTE_ADDR',''),
+    })
+
+
+def cos_virtual(request):
+    categorii_meniu = CategorieMasina.objects.all().order_by('nume_categorie')
+    return render(request, 'aplicatie_masini/cos_virtual.html', {
+        'toate_categoriile': categorii_meniu,
     })
 
 
